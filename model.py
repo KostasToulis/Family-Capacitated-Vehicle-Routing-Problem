@@ -1,10 +1,22 @@
+class Model:
+    def __init__(self):
+        self.num_nodes = 0
+        self.num_fam = 0
+        self.num_req = 0
+        self.capacity = 0
+        self.vehicles = 0
+        self.fam_members = []
+        self.fam_req = []
+        self.fam_dem = []
+        self.cost_matrix = []
+
+
 class Node:
-    def __init__(self, idd, xx, yy, fam, dem=0):
-        self.x = xx
-        self.y = yy
+    def __init__(self, idd, fam, costs, dem=0):
         self.ID = idd
         self.isRouted = False
         self.family = fam
+        self.costs = costs
         self.demand = dem
         self.isTabuTillIterator = -1
 
