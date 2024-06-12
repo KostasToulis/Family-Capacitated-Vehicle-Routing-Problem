@@ -48,13 +48,36 @@ def load_model(file_name):
     return model
 
 
-# def create_nodes_families(model):
-#     families = []
-#     nodes = []
-#     c = 0
-#     for i,fam in enumerate(model.fam_members):
-#         costs = model.cost_matrix[c:fam+1]
-#         families.append(Family())
-#         for i,cost in enumerate(costs):
-#             nodes.append(Node(i,,costs,))
+def find_position(arr, target):
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] < target+1:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return left if left < len(arr) else -1
 
+
+def create_nodes_families(model):
+    families = []
+    nodes = []
+    for i in range(len(model.fam_members)):
+        family = Family(i, [], model.fam_dem[i], model.fam_req[i])
+        families.append(family)
+
+    fam_index = []
+    c = 0
+    for i in model.fam_members:
+        fam_index.append(i + c)
+        c = i
+
+    for i in range(len(model.cost_matrix)):
+        family = find_position(fam_index, i)
+        node = Node(i, family, model.cost_matrix[i], families[family].demand)
+        nodes.append(node)
+
+    for node in nodes:
+        families[node.family].nodes.append(node)
+
+    return families, nodes
