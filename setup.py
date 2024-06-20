@@ -38,13 +38,14 @@ def load_model(file_name):
 
     # 5th - end of file
     cost_matrix = []
-    for i in range(model.num_nodes):
+    for i in range(model.num_nodes+1):
         line_counter += 1
         ln = all_lines[line_counter]
         no_spaces = list(map(int, ln.split()))
         cost_matrix.append(no_spaces)
 
     model.cost_matrix = cost_matrix
+    model = create_nodes_families(model)
     return model
 
 
@@ -52,7 +53,7 @@ def find_position(arr, target):
     left, right = 0, len(arr) - 1
     while left <= right:
         mid = (left + right) // 2
-        if arr[mid] < target+1:
+        if arr[mid] < target:#+1:
             left = mid + 1
         else:
             right = mid - 1
@@ -73,11 +74,21 @@ def create_nodes_families(model):
         c = i
 
     for i in range(len(model.cost_matrix)):
+        if i == 0:
+            node = Node(i, None, model.cost_matrix[i], None)
+            node.isDepot = True
+            model.depot = node
+            nodes.append(node)
+            continue
         family = find_position(fam_index, i)
         node = Node(i, family, model.cost_matrix[i], families[family].demand)
         nodes.append(node)
 
     for node in nodes:
-        families[node.family].nodes.append(node)
+        if node.family:
+            families[node.family].nodes.append(node)
 
-    return families, nodes
+    model.families = families
+    model.nodes = nodes
+    model.customers = nodes[1:]
+    return model
