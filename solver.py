@@ -46,14 +46,8 @@ class Solver:
             candidate_nodes.append(customer)
             family_reqs[customer.family] += 1
 
-        self.allNodes = candidate_nodes.insert(0, self.depot)
         self.customers = candidate_nodes
-        # self.co
         return candidate_nodes
-
-
-    def calculate_candidate_cost_martix(self):
-        return
 
     def SetRoutedFlagToFalseForAllCustomers(self):
         for i in range(0, len(self.customers)):
@@ -80,7 +74,7 @@ class Solver:
             B = rt.sequenceOfNodes[i + 1]
             tc += self.distanceMatrix[A.ID][B.ID]
             tl += A.demand
-        rt.load = tl
+        rt.demand = tl
         rt.cost = tc
 
     def Clarke_n_Wright(self):
@@ -98,7 +92,7 @@ class Solver:
                 continue
             if self.not_first_or_last(rt1, n1) or self.not_first_or_last(rt2, n2):
                 continue
-            if rt1.load + rt2.load > self.capacity:
+            if rt1.demand + rt2.demand > self.capacity:
                 continue
 
             self.merge_routes(n1, n2)
@@ -106,7 +100,7 @@ class Solver:
             self.sol.cost -= sav.score
             cst = self.CalculateTotalCost(self.sol)
 
-            print(cst, self.sol.cost)
+            # print(cst, self.sol.cost)
             a = 0
         a = 0
 
@@ -129,11 +123,12 @@ class Solver:
         s = Solution()
         for i in range(0, len(self.customers)):
             n = self.customers[i]
-            rt = Route(self.depot, self.capacity)
+            rt = Route(i, self.capacity)
             n.route = rt
             n.position_in_route = 1
+            rt.sequenceOfNodes = [self.depot, self.depot]
             rt.sequenceOfNodes.insert(1, n)
-            rt.load = n.demand
+            rt.demand = n.demand
             rt.cost = self.distanceMatrix[self.depot.ID][n.ID] + self.distanceMatrix[n.ID][self.depot.ID]
             s.routes.append(rt)
             s.cost += rt.cost
@@ -165,7 +160,7 @@ class Solver:
             for i in range(len(rt2.sequenceOfNodes) - 2, 0, -1):
                 n = rt2.sequenceOfNodes[i]
                 rt1.sequenceOfNodes.insert(len(rt1.sequenceOfNodes) - 1, n)
-        rt1.load += rt2.load
+        rt1.demand += rt2.demand
         self.sol.routes.remove(rt2)
         self.update_route_customers(rt1)
 
@@ -174,6 +169,3 @@ class Solver:
             n = rt.sequenceOfNodes[i]
             n.route = rt
             n.position_in_route = i
-
-
-

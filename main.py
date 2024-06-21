@@ -1,6 +1,8 @@
 from setup import load_model
-from solver import selection_part
+from solver import Solver
 
-model = load_model('instances/fcvrp_A034-02f_3_1_2.txt')
-candidate_nodes = selection_part(model)
-print(candidate_nodes)
+
+model = load_model('instances/fcvrp_P-n20-k2_2_2_2.txt')
+solver = Solver(model)
+sol = solver.solve()
+print(sol.cost)
