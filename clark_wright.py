@@ -58,6 +58,7 @@ class CnW_Solver(solver.Solver):
             # print(cst, self.sol.cost)
             a = 0
         a = 0
+        return self.sol
 
     def calculate_savings(self):
         savings = []

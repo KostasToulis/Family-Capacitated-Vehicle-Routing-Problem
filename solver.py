@@ -22,11 +22,10 @@ class Solver:
         self.model = m
 
     def solve(self):
+        from clark_wright import CnW_Solver
         self.select_candidates()
         self.SetRoutedFlagToFalseForAllCustomers()
-        # self.Clarke_n_Wright()
-        CnW_Solver()
-        # self.ReportSolution(self.sol)
+        self.sol = CnW_Solver(self.model).Clarke_n_Wright()
         return self.sol
 
     def select_candidates(self):
